@@ -1,0 +1,45 @@
+modLoader="lowcodefml"
+loaderVersion="${loader_range}"
+issueTrackerURL="https://github.com/SlimeKnights/TinkersThings/issues"
+license="MIT"
+
+[[mods]]
+    modId="tinkers_things"
+    version="${version}"
+    displayName="Tinkers' Things"
+    authors="Slime Knights"
+    description='''
+    A fully playable example thing pack for Tinkers' Construct, including
+    additional tools, weapons, armor, and materials.
+    '''
+
+[[mixins]]
+    config="tinkers_things.mixins.json"
+
+[[dependencies.tinkers_things]]
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.tinkers_things]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.tinkers_things]]
+    modId="tconstruct"
+    type="required"
+    versionRange="${tconstruct_range}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.tinkers_things]]
+    modId="jsonthings"
+    type="required"
+    versionRange="${jsonthings_range}"
+    ordering="AFTER"
+    side="BOTH"

@@ -1,0 +1,106 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.141'
+}
+
+group = 'slimeknights.tinkersthings'
+version = "${minecraft_version}-${mod_version}"
+
+base {
+    archivesName = 'TinkersThings'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+repositories {
+    mavenCentral()
+    maven { name = 'Dogforce Games'; url = 'https://www.dogforce-games.com/maven/' }
+}
+
+sourceSets.main.resources {
+    srcDir 'src'
+    exclude 'main/**'
+}
+
+neoForge {
+    version = project.neo_version
+    parchment {
+        minecraftVersion = project.parchment_minecraft_version
+        mappingsVersion = project.parchment_version
+    }
+
+    runs {
+        client { client() }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        configureEach {
+            gameDirectory = file('run')
+            systemProperty 'forge.logging.markers', 'SCAN,REGISTRIES,CORE'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        tinkers_things { sourceSet sourceSets.main }
+    }
+}
+
+configurations {
+    localRuntime
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    implementation project(':tconstruct')
+    implementation "dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${jsonthings_version}"
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    includeEmptyDirs = false
+    def replaceProperties = [
+            version: mod_version,
+            loader_range: loader_range,
+            minecraft_range: minecraft_range,
+            neo_range: neo_range,
+            tconstruct_range: tconstruct_range,
+            jsonthings_range: jsonthings_range
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties
+    }
+    from('generated/assets') {
+        into 'assets'
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title': "Tinkers' Things",
+                'Specification-Vendor': 'Slime Knights',
+                'Specification-Version': '1',
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'Slime Knights'
+        ])
+    }
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) { from components.java }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}

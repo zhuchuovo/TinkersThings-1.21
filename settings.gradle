@@ -1,0 +1,26 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.neoforged.net/releases' }
+        maven { url = 'https://maven.parchmentmc.org' }
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'TinkersThings'
+
+def mantleProjectDir = file('../Mantle-1.21.1')
+def tconstructProjectDir = file('../TinkersConstruct-1.21.1')
+if (!mantleProjectDir.isDirectory()) {
+    throw new GradleException("Mantle project not found at ${mantleProjectDir}")
+}
+if (!tconstructProjectDir.isDirectory()) {
+    throw new GradleException("Tinkers' Construct project not found at ${tconstructProjectDir}")
+}
+
+include 'mantle', 'tconstruct'
+project(':mantle').projectDir = mantleProjectDir
+project(':tconstruct').projectDir = tconstructProjectDir
